@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedrun Splits Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+    <style>
+        body {
+            background: radial-gradient(ellipse at bottom, #090A0F 0%, #090A0F 100%);
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            padding-top: 40px;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            color: #fff;
+            text-align: center;
+            font-family: 'Roboto Slab', serif;
+        }
+
+        form, .widget, .run-details, table {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        form label {
+            font-weight: 500;
+            color: #fff;
+        }
+
+        form input[type="text"],
+        form input[type="date"] {
+            width: calc(100% - 10px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: rgba(78, 104, 223, 0.1);
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        form input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(0, 123, 255, 0.7);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: rgba(0, 86, 179, 0.7);
+        }
+
+        .run-details {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #aaa;
+        }
+
+        .time {
+            color: rgb(232, 63, 63);
+            font-size: 16px;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .cumulative {
+            color: #00aaff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .edit-icon {
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .edit-form {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #fff;
+            border-collapse: collapse;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        th, td {
+            padding: 0.25rem;
+            vertical-align: top;
+            border: 1px solid #444;
+        }
+
+        th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #444;
+            font-weight: 700;
+        }
+
+        tbody + tbody {
+            border-top: 2px solid #444;
+        }
+
+        .edit-form input[type="text"] {
+            width: 80px;
+            margin-right: 10px;
+        }
+
+        .widget {
+            text-align: center;
+            padding: 20px;
+            margin: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Roboto Slab', serif;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .widget:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(17, 0, 255, 0.8);
+        }
+
+        .widget a {
+            color: #8395ff;
+            text-decoration: none;
+        }
+
+        .widget-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .widget-value {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .run-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-family: 'Roboto Slab', serif;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .run-header:hover {
+            background-color: rgba(46, 46, 55, 0.7);
+        }
+
+        .run-header .run-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .run-header .run-date {
+            font-size: 16px;
+            color: #aaa;
+            font-weight: 500;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 0rem;
+        }
+
+        .run-header .run-total-time {
+            font-size: 16px;
+            color: #00aaff;
+            font-weight: 500;
+        }
+
+        .run-content {
+            display: none;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
+        }
+
+        .segment-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        /* Parallax stars */
+        #stars, #stars2, #stars3 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        #stars {
+            width: 1px;
+            height: 1px;
+            box-shadow: 0px 0px 2px #FFF, 100px 100px 2px #FFF, 200px 200px 2px #FFF, 300px 300px 2px #FFF, 400px 400px 2px #FFF, 500px 500px 2px #FFF, 600px 600px 2px #FFF, 700px 700px 2px #FFF, 800px 800px 2px #FFF, 900px 900px 2px #FFF, 1000px 1000px 2px #FFF, 1100px 1100px 2px #FFF, 1200px 1200px 2px #FFF, 1300px 1300px 2px #FFF, 1400px 1400px 2px #FFF, 1500px 1500px 2px #FFF, 1600px 1600px 2px #FFF, 1700px 1700px 2px #FFF, 1800px 1800px 2px #FFF, 1900px 1900px 2px #FFF;
+            animation: animStar 50s linear infinite;
+        }
+
+        #stars2 {
+            width: 2px;
+            height: 2px;
+            box-shadow: 0px 0px 3px #FFF, 200px 200px 3px #FFF, 400px 400px 3px #FFF, 600px 600px 3px #FFF, 800px 800px 3px #FFF, 1000px 1000px 3px #FFF, 1200px 1200px 3px #FFF, 1400px 1400px 3px #FFF, 1600px 1600px 3px #FFF, 1800px 1800px 3px #FFF;
+            animation: animStar 100s linear infinite;
+        }
+
+        #stars3 {
+            width: 3px;
+            height: 3px;
+            box-shadow: 0px 0px 4px #FFF, 300px 300px 4px #FFF, 600px 600px 4px #FFF, 900px 900px 4px #FFF, 1200px 1200px 4px #FFF, 1500px 1500px 4px #FFF;
+            animation: animStar 150s linear infinite;
+        }
+
+        @keyframes animStar {
+            from {
+                transform: translateY(0px);
+            }
+            to {
+                transform: translateY(-2000px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
+
+    <h1>Secret Room Splits Tracker</h1>
+
+    <div class="d-flex justify-content-center">
+        <div class="widget">
+            <div class="widget-title">Fastest Run</div>
+            <div class="widget-value">{{ fastest_run_time }}</div>
+        </div>
+        <div class="widget">
+            <div class="widget-title">Potential Best Run</div>
+            <div class="widget-value">{{ ideal_times_total }}</div>
+        </div>
+        <div class="widget">
+            <div class="widget-title"><a href="/strategy">Strategy</a></div>
+        </div>
+    </div>
+
+    <h2>Filter Runs:</h2>
+    <form action="/" method="post">
+        <label for="filter_name">Filter by Name:</label>
+        <input type="text" name="filter_name" id="filter_name">
+        <label for="filter_date">Filter by Date:</label>
+        <input type="date" name="filter_date" id="filter_date">
+        <input type="submit" value="Filter">
+    </form>
+
+    <h2>Enter new run:</h2>
+    <form action="/add" method="post">
+        <label for="name">Run Name:</label>
+        <input type="text" name="name" id="name" required><br>
+        <label for="date">Date:</label>
+        <input type="date" name="date" id="date" required><br>
+
+        <label for="room1">Room 1 (mm:ss):</label>
+        <input type="text" name="room1" id="room1" required pattern="\d{2}:\d{2}" title="Time must be in the format mm:ss"><br>
+        
+        <label for="gullahs">Gullahs (mm:ss):</label>
+        <input type="text" name="gullahs" id="gullahs" required pattern="\d{2}:\d{2}" title="Time must be in the format mm:ss"><br>
+        
+        <label for="room2">Room 2 (mm:ss):</label>
+        <input type="text" name="room2" id="room2" required pattern="\d{2}:\d{2}" title="Time must be in the format mm:ss"><br>
+        
+        <label for="tengu">Tengu (mm:ss):</label>
+        <input type="text" name="tengu" id="tengu" required pattern="\d{2}:\d{2}" title="Time must be in the format mm:ss"><br>
+        
+        <label for="room3">Room 3 (mm:ss):</label>
+        <input type="text" name="room3" id="room3" required pattern="\d{2}:\d{2}" title="Time must be in the format mm:ss"><br>
+        
+        <label for="hague">Hague (mm:ss):</label>
+        <input type="text" name="hague" id="hague" required pattern="\d{2}:\d{2}" title="Time must be in the format mm:ss"><br>
+        
+        <label for="room4">Room 4 (mm:ss):</label>
+        <input type="text" name="room4" id="room4" required pattern="\d{2}:\d{2}" title="Time must be in the format mm:ss"><br>
+        
+        <label for="towers">Towers (mm:ss):</label>
+        <input type="text" name="towers" id="towers" required pattern="\d{2}:\d{2}" title="Time must be in the format mm:ss"><br>
+        
+        <label for="midboss">Middle Boss (mm:ss):</label>
+        <input type="text" name="midboss" id="midboss" required pattern="\d{2}:\d{2}" title="Time must be in the format mm:ss"><br>
+        
+        <label for="finalboss">Final Boss (mm:ss):</label>
+        <input type="text" name="finalboss" id="finalboss" required pattern="\d{2}:\d{2}" title="Time must be in the format mm:ss"><br>
+        
+        <input type="submit" value="Add Run">
+    </form>
+
+    <h2>Recorded Runs:</h2>
+    <div class="run-details" id="recordedRuns">
+        {% for run in runs %}
+        <div>
+            <div class="run-header" onclick="toggleRunContent({{ run.id }})">
+                <span class="run-name" id="display-name-{{ run.id }}">{{ run.name }}</span>
+                <form action="/edit/{{ run.id }}" method="post" class="edit-form" id="form-name-{{ run.id }}" style="display:none;">
+                    <input type="hidden" name="segment" value="name">
+                    <input type="text" name="name" value="{{ run.name }}" required>
+                    <button type="submit" class="btn btn-success btn-sm">Save</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEdit('name', {{ run.id }}, false)">Cancel</button>
+                </form>
+                <i class="fas fa-edit edit-icon" onclick="toggleEdit('name', {{ run.id }}, true)"></i>
+                <span class="run-date">{{ run.date }}</span>
+                <span class="run-total-time">{{ run['total_time'] }}</span>
+                <span><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="run-content" id="run-content-{{ run.id }}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Segment</th>
+                            <th>Cumulative Time</th>
+                            <th>Individual Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for segment in ['room1', 'gullahs', 'room2', 'tengu', 'room3', 'hague', 'room4', 'towers', 'midboss', 'finalboss'] %}
+                        <tr>
+                            <td><img src="{{ url_for('get_image', filename=segment + '.png') }}" alt="{{ segment }}" class="segment-icon">{{ segment.replace('room', 'Room ').title().replace('Gullahs', 'Gullahs').replace('Tengu', 'Tengu').replace('Hague', 'Hague').replace('Towers', 'Towers').replace('Midboss', 'Middle Boss').replace('Finalboss', 'Final Boss') }}</td>
+                            <td>
+                                <span class="cumulative" id="display-{{ segment }}-{{ run.id }}">{{ run['cumulative_' + segment] }}</span>
+                                <form action="/edit/{{ run.id }}" method="post" class="edit-form" id="form-{{ segment }}-{{ run.id }}" style="display:none;">
+                                    <input type="hidden" name="segment" value="{{ segment }}">
+                                    <input type="text" name="{{ segment }}" value="{{ run['cumulative_' + segment] }}" pattern="\d{2}:\d{2}" required>
+                                    <button type="submit" class="btn btn-success btn-sm">Save</button>
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEdit('{{ segment }}', {{ run.id }}, false)">Cancel</button>
+                                </form>
+                            </td>
+                            <td><span class="time">{{ run[segment] }}</span></td>
+                            <td><i class="fas fa-edit edit-icon" onclick="toggleEdit('{{ segment }}', {{ run.id }}, true)"></i></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <form action="/delete/{{ run.id }}" method="post">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2>Potential Best Run:</h2>
+    <div class="run-details">
+        <table>
+            <thead>
+                <tr>
+                    <th>Segment</th>
+                    <th>Best Cumulative Time</th>
+                    <th>Best Segment Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for segment, times in ideal_times.items() %}
+                <tr>
+                    <td><img src="{{ url_for('get_image', filename=segment + '.png') }}" alt="{{ segment }}" class="segment-icon">{{ segment.replace('_', ' ').title() }}</td>
+                    <td><span class="cumulative">{{ times.cumulative_time }}</span></td>
+                    <td><span class="time">{{ times.segment_time }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p>Total Time: <span class="total-time">{{ ideal_times_total }}</span></p>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Speedrun Splits Tracker. All Rights Reserved.</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleEdit(segment, id, editMode) {
+            const displaySpan = document.getElementById(`display-${segment}-${id}`);
+            const form = document.getElementById(`form-${segment}-${id}`);
+
+            if (editMode) {
+                displaySpan.style.display = 'none';
+                form.style.display = 'inline-flex';
+            } else {
+                displaySpan.style.display = 'inline';
+                form.style.display = 'none';
+            }
+        }
+
+        function toggleRunContent(id) {
+            const content = document.getElementById(`run-content-${id}`);
+            const icon = content.previousElementSibling.querySelector('i');
+
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            } else {
+                content.style.display = 'none';
+                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            }
+        }
+    </script>
+</body>
+</html>
