@@ -2,6 +2,12 @@
 
 The Secret Room Splits Tracker is a web application designed to help speedrunners track their progress through various stages of a game. This project includes a Flask-based backend, HTML templates for the frontend, and a SQLite database for storing data.
 
+![alt text](screenshots/Pastedimage20240729140713.png)
+
+![alt text](screenshots/Pastedimage20240729140732.png)
+
+![alt text](screenshots/Pastedimage20240729140753.png)
+
 ## Features
 
 - **Track Progress:** Log and monitor your progress through different game stages.
