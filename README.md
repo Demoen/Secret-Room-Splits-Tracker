@@ -44,7 +44,6 @@ Secret Room Splits Tracker/
 - **`templates/`**: HTML templates for the web interface.
 - **`app.py`**: The main Flask application script.
 - **`speedrun.db`**: SQLite database file.
-- **`test.zip`**: An example ZIP file (purpose unclear from current structure).
 
 ## Getting Started
 
